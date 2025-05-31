@@ -12,51 +12,40 @@ import org.bukkit.entity.Player;
  * the entry was removed or has expired.
  */
 public class Entry {
-    private Player player;
-    private Location location;
-    private World world;
-    private Runnable removeCallback;
+    private final UUID   playerId;
+    private final Location location;
+    private final Runnable removeCallback;
 
-    /**
-     * Initialize new {@link Entry} with passed
-     * death victim.
-     * @param player death victim
-     */
-    public Entry(Player player) {
-        this(player, null);
+    /** 0 = never expires; otherwise epoch millis when it should expire */
+    private final long   expireAtMillis;
+
+    public Entry(Player player, Runnable removeCallback, long expiresInTicks) {
+        this.playerId        = player.getUniqueId();
+        this.location        = player.getLocation();
+        this.removeCallback  = removeCallback;
+        if (expiresInTicks <= 0) {
+            this.expireAtMillis = 0L;
+        } else {
+            this.expireAtMillis = System.currentTimeMillis() + expiresInTicks * 50;
+        }
     }
 
-    /**
-     * Initialize new {@link Entry} with passed
-     * death victim and remove callback {@link Runnable}.
-     * @param player death victim
-     * @param removeCallback remove callback runnable
-     */
-    public Entry(Player player, Runnable removeCallback) {
-        this.player = player;
-        this.removeCallback = removeCallback;
-        this.world = player.getWorld();
-        this.location = player.getLocation();
+    /** Constructor for deserialization */
+    public Entry(UUID playerId, Location loc, Runnable removeCallback, long expireAtMillis) {
+        this.playerId        = playerId;
+        this.location        = loc;
+        this.removeCallback  = removeCallback;
+        this.expireAtMillis  = expireAtMillis;
     }
 
     public Player getPlayer() {
-        return player;
+        return Bukkit.getPlayer(playerId);
     }
+    public UUID getPlayerId() { return playerId; }
+    public Location getLocation() { return location; }
+    public long getExpireAtMillis() { return expireAtMillis; }
 
-    public World getWorld() {
-        return this.world;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    /**
-     * Calls the passed remove/expire callback
-     * when defined.
-     */
     public void runRemoveCallback() {
-        if (this.removeCallback != null)
-            this.removeCallback.run();
+        if (removeCallback != null) removeCallback.run();
     }
- }
+}
