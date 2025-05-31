@@ -55,7 +55,48 @@ public class DeathRegister {
         }
     }
 
-    // … get(), remove(Entry), remove(Player), flush() as before …
+        /**
+     * Returns a list of entries where the given location is
+     * in the sphericalRadius of the death entry location.
+     * @param location current reviver's location
+     * @param sphericalRadius valid spherical radius around the death
+     * @return list of revivable death entries
+     */
+    public List<Entry> get(Location location, double sphericalRadius) {
+        return this.register.stream()
+                .filter(e -> this.isInRange(e.getLocation(), location, sphericalRadius))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Remove the given entry from the register by
+     * given entry object.
+     * @param entry entry to remove
+     */
+    public void remove(Entry entry) {
+        this.register.remove(entry);
+        entry.runRemoveCallback();
+    }
+
+    /**
+     * Removes an entry from the register by the
+     * given player object.
+     * @param player death victim player object
+     */
+    public void remove(Player player) {
+        this.register.stream()
+                .filter(e -> e.getPlayer() == player)
+                .findFirst().ifPresent(this::remove);
+    }
+
+    /**
+     * Flushes the whole death register.
+     * This executes each entries remove callback.
+     */
+    public void flush() {
+        this.register.forEach(Entry::runRemoveCallback);
+        this.register.clear();
+    }
 
     /**
      * Save all pending deaths into deaths.yml.
