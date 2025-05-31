@@ -78,29 +78,53 @@ public class DeathRegister {
         }
     }
 
-    /**
-     * Load deaths from deaths.yml, re-schedule expiry.
-     */
     private void load() {
-        if (!dataFile.exists()) return;
-        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(dataFile);
-        if (!cfg.isConfigurationSection("deaths")) return;
+    if (!dataFile.exists()) return;
 
-        cfg.getConfigurationSection("deaths").getKeys(false).forEach(key -> {
-            String base = "deaths." + key + ".";
-            UUID   uuid    = UUID.fromString(cfg.getString(base + "uuid"));
-            String world   = cfg.getString(base + "world");
-            double x       = cfg.getDouble(base + "x");
-            double y       = cfg.getDouble(base + "y");
-            double z       = cfg.getDouble(base + "z");
-            float  pitch   = (float) cfg.getDouble(base + "pitch");
-            float  yaw     = (float) cfg.getDouble(base + "yaw");
-            long   expireAt= cfg.getLong(base + "expireAt", 0L);
+    YamlConfiguration cfg = YamlConfiguration.loadConfiguration(dataFile);
 
-            Location loc = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
-            Entry e = new Entry(uuid, loc, null, expireAt);
-            register.add(e);
-            scheduleExpiry(e);
-        });
-    }
+    cfg.getKeys(false).forEach(key -> {
+        String base     = "deaths." + key + ".";
+        UUID   uuid     = UUID.fromString(cfg.getString(base + "uuid"));
+        String worldName= cfg.getString(base + "world");
+        double x        = cfg.getDouble(base + "x");
+        double y        = cfg.getDouble(base + "y");
+        double z        = cfg.getDouble(base + "z");
+        float  pitch    = (float) cfg.getDouble(base + "pitch");
+        float  yaw      = (float) cfg.getDouble(base + "yaw");
+        long   expireAt = cfg.getLong(base + "expireAt", 0L);
+
+        // 1) Reconstitute the Location where the player died
+        World  world = Bukkit.getWorld(worldName);
+        if (world == null) {
+            // If the world was renamed or missing, skip re-scheduling this entry
+            plugin.getLogger().warning("World \"" + worldName + "\" not found while loading pending deaths for " + uuid);
+            return;
+        }
+        Location loc = new Location(world, x, y, z, yaw, pitch);
+
+        // 2) Start a new repeating task to spawn the same "death beacon" particles at loc
+        //    (exactly the same pattern as DeathListener.spawnDeathLocationParticles).
+        BukkitTask particleTask = plugin.getServer().getScheduler()
+            .runTaskTimer(plugin, () -> {
+                // CLOUD at the exact deathpoint
+                world.spawnParticle(Particle.CLOUD, loc, 10, 2, 2, 2, 0);
+                // Beam of END_ROD from y=0 up to y=250
+                for (int i = 0; i < 25; i++) {
+                    world.spawnParticle(Particle.END_ROD, loc.getX(), i * 10, loc.getZ(), 10, 0, 10, 0, 0);
+                }
+            }, 0L, 5L);
+
+        // 3) When this entry is removed (either by revival or expire), cancel the task:
+        Runnable onRemove = particleTask::cancel;
+
+        // 4) Rebuild the Entry with the exact same expire timestamp and the `onRemove` callback
+        Entry e = new Entry(uuid, loc, onRemove, expireAt);
+        register.add(e);
+
+        // 5) Re-schedule its expiry (so remove(e) fires at the same absolute time)
+        scheduleExpiry(e);
+    });
+}
+
 }
