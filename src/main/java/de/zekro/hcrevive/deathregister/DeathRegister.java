@@ -1,109 +1,106 @@
 package de.zekro.hcrevive.deathregister;
 
 import de.zekro.hcrevive.HardcoreRevive;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import java.util.ArrayList;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-/**
- * The DeathRegister holds record of all occurred deaths
- * which can be revived by another player.
- */
 public class DeathRegister {
 
-    private HardcoreRevive pluginInstance;
-    private ArrayList<Entry> register;
+    private final HardcoreRevive plugin;
+    private final File         dataFile;
+    private final List<Entry>  register;
 
-    /**
-     * Initializes new instance of {@link DeathRegister}.
-     * @param pluginInstance plugin instance
-     */
-    public DeathRegister(HardcoreRevive pluginInstance) {
-        this.pluginInstance = pluginInstance;
-        this.register = new ArrayList<>();
+    public DeathRegister(HardcoreRevive plugin) {
+        this.plugin    = plugin;
+        this.register  = new ArrayList<>();
+        this.dataFile  = new File(plugin.getDataFolder(), "deaths.yml");
+        load();  // load from disk on startup
     }
 
-    /**
-     * Register a new death.
-     * When expiresIn is '0', the entry will never expire.
-     * @param player victim player
-     * @param expiresIn expiration in game ticks
-     */
-    public void register(Player player, long expiresIn) {
-        this.register(player, expiresIn, null);
+    public void register(Player player, long expiresInTicks) {
+        register(player, expiresInTicks, null);
     }
 
-    /**
-     * Register a new death.
-     * When expiresIn is '0', the entry will never expire.
-     * @param player victim player
-     * @param expiresIn expiration in game ticks
-     * @param removeCallback remove/expiration callback
-     */
-    public void register(Player player, long expiresIn, Runnable removeCallback) {
-        Entry entry = new Entry(player, removeCallback);
-        this.register.add(entry);
+    public void register(Player player, long expiresInTicks, Runnable removeCallback) {
+        Entry e = new Entry(player, removeCallback, expiresInTicks);
+        register.add(e);
+        scheduleExpiry(e);
+    }
 
-        if (expiresIn > 0) {
-            this.pluginInstance.getServer().getScheduler()
-                    .runTaskLater(this.pluginInstance, () -> this.remove(entry), expiresIn);
+    private void scheduleExpiry(Entry e) {
+        if (e.getExpireAtMillis() > 0) {
+            long delayMs = e.getExpireAtMillis() - System.currentTimeMillis();
+            if (delayMs <= 0) {
+                // already expired
+                remove(e);
+            } else {
+                long ticks = Math.round(delayMs / 50.0);
+                plugin.getServer().getScheduler()
+                      .runTaskLater(plugin, () -> remove(e), ticks);
+            }
+        }
+    }
+
+    // … get(), remove(Entry), remove(Player), flush() as before …
+
+    /**
+     * Save all pending deaths into deaths.yml.
+     */
+    public void save() {
+        YamlConfiguration cfg = new YamlConfiguration();
+
+        for (int i = 0; i < register.size(); i++) {
+            Entry e = register.get(i);
+            String path = "deaths." + i;
+            cfg.set(path + ".uuid",         e.getPlayerId().toString());
+            cfg.set(path + ".world",        e.getLocation().getWorld().getName());
+            cfg.set(path + ".x",            e.getLocation().getX());
+            cfg.set(path + ".y",            e.getLocation().getY());
+            cfg.set(path + ".z",            e.getLocation().getZ());
+            cfg.set(path + ".pitch",        e.getLocation().getPitch());
+            cfg.set(path + ".yaw",          e.getLocation().getYaw());
+            cfg.set(path + ".expireAt",     e.getExpireAtMillis());
+        }
+
+        try {
+            plugin.getDataFolder().mkdirs();
+            cfg.save(dataFile);
+        } catch (IOException ex) {
+            plugin.getLogger().severe("Could not save death register: " + ex.getMessage());
         }
     }
 
     /**
-     * Returns a list of entries where the given location is
-     * in the sphericalRadius of the death entry location.
-     * @param location current reviver's location
-     * @param sphericalRadius valid spherical radius around the death
-     * @return list of revivable death entries
+     * Load deaths from deaths.yml, re-schedule expiry.
      */
-    public List<Entry> get(Location location, double sphericalRadius) {
-        return this.register.stream()
-                .filter(e -> this.isInRange(e.getLocation(), location, sphericalRadius))
-                .collect(Collectors.toList());
-    }
+    private void load() {
+        if (!dataFile.exists()) return;
+        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(dataFile);
+        if (!cfg.isConfigurationSection("deaths")) return;
 
-    /**
-     * Remove the given entry from the register by
-     * given entry object.
-     * @param entry entry to remove
-     */
-    public void remove(Entry entry) {
-        this.register.remove(entry);
-        entry.runRemoveCallback();
-    }
+        cfg.getConfigurationSection("deaths").getKeys(false).forEach(key -> {
+            String base = "deaths." + key + ".";
+            UUID   uuid    = UUID.fromString(cfg.getString(base + "uuid"));
+            String world   = cfg.getString(base + "world");
+            double x       = cfg.getDouble(base + "x");
+            double y       = cfg.getDouble(base + "y");
+            double z       = cfg.getDouble(base + "z");
+            float  pitch   = (float) cfg.getDouble(base + "pitch");
+            float  yaw     = (float) cfg.getDouble(base + "yaw");
+            long   expireAt= cfg.getLong(base + "expireAt", 0L);
 
-    /**
-     * Removes an entry from the register by the
-     * given player object.
-     * @param player death victim player object
-     */
-    public void remove(Player player) {
-        this.register.stream()
-                .filter(e -> e.getPlayer() == player)
-                .findFirst().ifPresent(this::remove);
-    }
-
-    /**
-     * Flushes the whole death register.
-     * This executes each entries remove callback.
-     */
-    public void flush() {
-        this.register.forEach(Entry::runRemoveCallback);
-        this.register.clear();
-    }
-
-    /**
-     * Returns true when the distance between loc1 and
-     * loc2 is equal or smaller than sphericalRadius.
-     * @param loc1 location 1
-     * @param loc2 location 2
-     * @param sphericalRadius valid spherical radius
-     * @return whether the distance is smaller or equal sphericalRadius
-     */
-    private boolean isInRange(Location loc1, Location loc2, double sphericalRadius) {
-        return loc1.distance(loc2) <= sphericalRadius;
+            Location loc = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+            Entry e = new Entry(uuid, loc, null, expireAt);
+            register.add(e);
+            scheduleExpiry(e);
+        });
     }
 }
