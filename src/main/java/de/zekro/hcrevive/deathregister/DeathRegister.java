@@ -55,6 +55,17 @@ public class DeathRegister {
         }
     }
 
+    /**
+     * Returns true if both locations are in the same world
+     * and the straight‐line distance between them is ≤ radius.
+     */
+    private static boolean isInRange(Location a, Location b, double radius) {
+        if (a == null || b == null) return false;
+        if (!a.getWorld().equals(b.getWorld())) return false;
+        return a.distance(b) <= radius;
+    }
+
+
         /**
      * Returns a list of entries where the given location is
      * in the sphericalRadius of the death entry location.
