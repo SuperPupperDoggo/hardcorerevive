@@ -1,9 +1,12 @@
 package de.zekro.hcrevive.listeners;
 
 import de.zekro.hcrevive.deathregister.DeathRegister;
+import de.zekro.hcrevive.deathregister.Entry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.entity.Player;
+import org.bukkit.Location;
 
 /**
  * Listener class binding the {@link PlayerQuitEvent}.
