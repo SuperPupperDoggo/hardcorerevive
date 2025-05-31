@@ -51,9 +51,13 @@ public class SneakListener implements Listener {
      */
     @EventHandler
     void onSneak(PlayerToggleSneakEvent event) {
-        // Only continue if started sneaking.
-        if (!event.isSneaking())
-            return;
+        Player reviver = event.getPlayer();
+
+        // Only run this logic when the player actually starts sneaking
+        if (!reviver.isSneaking()) return;
+
+        // Only run this logic if the player is not in spectator
+        if (reviver.getGameMode() == GameMode.SPECTATOR) return;
 
         // Check if registered deaths are in the specified range.
         List<Entry> entries = deathRegister.get(event.getPlayer().getLocation(), this.sphericalRange);
