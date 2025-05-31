@@ -104,7 +104,7 @@ public class DeathListener implements Listener {
                 WorldUtil.getName(victim.getWorld())));
 
         if (this.reviveTimeout > 0) {
-            res.append(String.format(" You have %s to reach this location.",
+            res.append(String.format(" You have %s to reach this location before they die forever!",
                     TimeUtil.getFormattedTimeSpan(this.reviveTimeout)));
         }
 
@@ -122,10 +122,10 @@ public class DeathListener implements Listener {
     private String getDeathVictimMessage() {
         StringBuilder res = new StringBuilder();
 
-        res.append("Hey, you're good? You can be revived by another player on the server!");
+        res.append("You died! But don't worry, you can be revived by another player on the server!");
 
         if (this.reviveTimeout > 0) {
-            res.append(String.format(" But they have only %s to reach your location to revive you.",
+            res.append(String.format(" You must be revived in %s, or you will be dead forever!",
                     TimeUtil.getFormattedTimeSpan(this.reviveTimeout)));
         }
 
