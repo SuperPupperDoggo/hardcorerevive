@@ -37,8 +37,12 @@ public final class HardcoreRevive extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        // If we have a DeathRegister, write out all pending deaths (with their locations) to disk
+        if (this.deathRegister != null) {
+            this.deathRegister.save();
+        }
     }
+
 
     private void registerListeners() {
         PluginManager pm = getServer().getPluginManager();
