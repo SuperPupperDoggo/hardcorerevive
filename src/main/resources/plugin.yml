@@ -6,6 +6,7 @@ prefix: HCREVIVE
 authors: [SuperPupperDoggo,zekro]
 description: Revive people in hardcore mode.
 website: https://github.com/SuperPupperDoggo/HardcoreRevive
+softdepend: [Multiverse-Core]
 
 commands:
   hcrvFlushRegister:
