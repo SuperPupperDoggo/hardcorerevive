@@ -19,7 +19,7 @@ public class PurgatoryGenerator extends ChunkGenerator {
     private static final int BEDROCK_LAYERS = 5;
 
     private SimplexOctaveGenerator noise;
-
+    public PurgatoryGenerator() {}
     @Override
     public void generateNoise(WorldInfo worldInfo,
                               Random random,
