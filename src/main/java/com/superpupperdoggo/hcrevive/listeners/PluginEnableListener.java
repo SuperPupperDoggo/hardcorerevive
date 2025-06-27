@@ -16,6 +16,7 @@ public class PluginEnableListener implements Listener {
     final Logger logger;
     public PluginEnableListener(HardcoreRevive hcrevive, Logger logger) {
         this.logger = logger;
+        this.logger.info("Plugin enable listener created.");
     }
     @EventHandler(priority = EventPriority.LOW)
     public void onPluginLoad(PluginEnableEvent event) {
