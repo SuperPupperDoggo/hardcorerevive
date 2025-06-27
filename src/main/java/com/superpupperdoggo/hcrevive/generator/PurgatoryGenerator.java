@@ -84,7 +84,7 @@ public class PurgatoryGenerator extends ChunkGenerator {
     }
 
     // disable all vanilla-populators:
-    @Override public boolean shouldGenerateNoise(WorldInfo info, Random r, int x, int z)       { return false; }
+    @Override public boolean shouldGenerateNoise(WorldInfo info, Random r, int x, int z)       { return true; }
     @Override public boolean shouldGenerateSurface(WorldInfo info, Random r, int x, int z)     { return false; }
     @Override public boolean shouldGenerateCaves(WorldInfo info, Random r, int x, int z)       { return false; }
     @Override public boolean shouldGenerateDecorations(WorldInfo info, Random r, int x, int z) { return false; }
