@@ -4,6 +4,7 @@ import de.zekro.hcrevive.HardcoreRevive;
 import de.zekro.hcrevive.deathregister.DeathRegister;
 import de.zekro.hcrevive.util.TimeUtil;
 import de.zekro.hcrevive.util.WorldUtil;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
