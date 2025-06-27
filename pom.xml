@@ -82,5 +82,6 @@
          <artifactId>multiverse-core</artifactId>
          <version>5.0.0-SNAPSHOT</version>
          <scope>compileOnly</scope>
+    </dependency>
   </dependencies>
 </project>
