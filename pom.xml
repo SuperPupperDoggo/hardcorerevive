@@ -81,7 +81,7 @@
          <groupId>org.mvplugins.multiverse.core</groupId>
          <artifactId>multiverse-core</artifactId>
          <version>5.0.0-SNAPSHOT</version>
-         <scope>compile</scope>
+         <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
