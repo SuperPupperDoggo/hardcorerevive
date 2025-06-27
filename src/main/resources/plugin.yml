@@ -3,12 +3,16 @@ version: ${project.version}
 main: de.zekro.hcrevive.HardcoreRevive
 api-version: 1.13
 prefix: HCREVIVE
-authors: [zekro]
+authors: [SuperPupperDoggo,zekro]
 description: Revive people in hardcore mode.
-website: https://github.com/zekroTJA/HardcoreRevive
+website: https://github.com/SuperPupperDoggo/HardcoreRevive
 
 commands:
   hcrvFlushRegister:
     description: Flush the death register.
     usage: /hcrvFlushRegister
     permission: hcrevive.flushRegister
+
+generators:
+  purgatory:
+    class: com.superpupperdoggo.hcrevive.generator.PurgatoryGenerator
