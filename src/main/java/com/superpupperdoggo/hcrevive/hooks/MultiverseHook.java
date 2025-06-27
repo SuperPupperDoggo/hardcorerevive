@@ -1,4 +1,4 @@
-package com.superpupperdoggo.hooks;
+package com.superpupperdoggo.hcrevive.hooks;
 
 import org.mvplugins.multiverse.core.world.generators.GeneratorPlugin;
 import org.mvplugins.multiverse.external.jetbrains.annotations.NotNull;
