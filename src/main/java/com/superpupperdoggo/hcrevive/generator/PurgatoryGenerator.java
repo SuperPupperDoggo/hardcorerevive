@@ -1,72 +1,65 @@
-package com.superpupperdoggo.hcrevive.generator;
-
-import java.util.Random;
-
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.generator.ChunkGenerator.BiomeGrid;
-import org.bukkit.generator.ChunkGenerator.ChunkData;
-import org.bukkit.util.noise.SimplexOctaveGenerator;
-
 public class PurgatoryGenerator extends ChunkGenerator {
-    private static final int MIN_Y           = 0;
-    private static final int HEIGHT          = 128;
-    private static final int BEDROCK_LAYERS  = 5;
-
-    // noise for caves
+    private static final int MIN_Y = 0, HEIGHT = 128, BEDROCK_LAYERS = 5;
     private SimplexOctaveGenerator noise;
 
     @Override
-    public ChunkData generateChunkData(World world,
-                                       Random random,
-                                       int chunkX,
-                                       int chunkZ,
-                                       BiomeGrid biome) {
-        // initialize noise on first call
+    public @NotNull ChunkData generateNoise(@NotNull WorldInfo worldInfo,
+                                            @NotNull Random random,
+                                            int chunkX, int chunkZ,
+                                            @NotNull ChunkData chunk) {
         if (noise == null) {
-            noise = new SimplexOctaveGenerator(world, 8);
-            noise.setScale(1 / 16.0);
+            noise = new SimplexOctaveGenerator(worldInfo.getSeed(), 8);
+            noise.setScale(1/16.0);
         }
-
-        ChunkData chunk = createChunkData(world);
-        int baseX = chunkX << 4;
-        int baseZ = chunkZ << 4;
-
+        int baseX = chunkX << 4, baseZ = chunkZ << 4;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                // force basalt deltas biome everywhere
-                biome.setBiome(x, z, Biome.BASALT_DELTAS);
-
-                int worldX = baseX + x;
-                int worldZ = baseZ + z;
-
+                int worldX = baseX + x, worldZ = baseZ + z;
                 for (int y = MIN_Y; y < MIN_Y + HEIGHT; y++) {
-                    // bedrock floor/ceiling
-                    if (y < MIN_Y + BEDROCK_LAYERS
-                     || y >= MIN_Y + HEIGHT - BEDROCK_LAYERS) {
+                    if (y < MIN_Y + BEDROCK_LAYERS || y >= MIN_Y + HEIGHT - BEDROCK_LAYERS) {
                         chunk.setBlock(x, y, z, Material.BEDROCK);
-                    } else {
-                        // carve caves: noise > 0 → concrete, else air
-                        double d = noise.noise(worldX, y, worldZ, 0.5, 0.5);
-                        if (d > 0) {
-                            chunk.setBlock(x, y, z, Material.BLACK_CONCRETE);
-                        }
+                    } else if (noise.noise(worldX, y, worldZ, 0.5, 0.5) > 0) {
+                        chunk.setBlock(x, y, z, Material.BLACK_CONCRETE);
                     }
                 }
             }
         }
-
         return chunk;
     }
 
     @Override
-    public boolean shouldGenerateStructures()   { return false; }
+    public void generateSurface(@NotNull WorldInfo worldInfo,
+                                @NotNull Random random,
+                                int chunkX, int chunkZ,
+                                @NotNull ChunkData chunk) { /* no-op */ }
+
     @Override
-    public boolean shouldGenerateMobs()         { return false; }
+    public void generateBedrock(@NotNull WorldInfo worldInfo,
+                                @NotNull Random random,
+                                int chunkX, int chunkZ,
+                                @NotNull ChunkData chunk) { /* already in noise */ }
+
     @Override
-    public boolean shouldGenerateOres()         { return false; }
+    public void generateCaves(@NotNull WorldInfo worldInfo,
+                              @NotNull Random random,
+                              int chunkX, int chunkZ,
+                              @NotNull ChunkData chunk) { /* no-op */ }
+
     @Override
-    public boolean shouldGenerateDecorations()  { return false; }
+    public boolean shouldGenerateNoise(WorldInfo w, Random r, int x, int z) { return false; }
+    @Override
+    public boolean shouldGenerateSurface(WorldInfo w, Random r, int x, int z) { return false; }
+    @Override
+    public boolean shouldGenerateStructures(WorldInfo w, Random r, int x, int z) { return false; }
+    @Override
+    public boolean shouldGenerateDecorations(WorldInfo w, Random r, int x, int z) { return false; }
+    @Override
+    public boolean shouldGenerateMobs(WorldInfo w, Random r, int x, int z) { return false; }
+    @Override
+    public boolean shouldGenerateCaves(WorldInfo w, Random r, int x, int z) { return false; }
+
+    @Override
+    public @Nullable BiomeProvider getDefaultBiomeProvider(WorldInfo worldInfo) {
+        return new SingleBiomeProvider(Biome.BASALT_DELTAS);
+    }
 }
