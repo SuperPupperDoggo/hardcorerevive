@@ -5,6 +5,7 @@ import de.zekro.hcrevive.deathregister.DeathRegister;
 import de.zekro.hcrevive.listeners.DeathListener;
 import de.zekro.hcrevive.listeners.QuitListener;
 import de.zekro.hcrevive.listeners.SneakListener;
+import com.superpupperdoggo.listeners.PluginEnableListener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -50,6 +51,8 @@ public final class HardcoreRevive extends JavaPlugin {
         pm.registerEvents(new DeathListener(this, this.deathRegister, this.getLogger()), this);
         pm.registerEvents(new SneakListener(this, this.deathRegister), this);
         pm.registerEvents(new QuitListener(this.deathRegister), this);
+        pm.registerEvents(new QuitListener(this.deathRegister), this);
+        pm.registerEvents(new PluginEnableListener(this,this.getLogger()), this);
     }
 
     private void registerCommands() {
