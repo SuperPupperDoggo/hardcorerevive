@@ -14,6 +14,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitTask;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.lang.Math;
 
 /**
  * Listener class binding the {@link PlayerDeathEvent}.
@@ -57,6 +58,9 @@ public class DeathListener implements Listener {
         Player player = event.getEntity();
         World world = player.getWorld();
 
+        // Do not run if player is already a spectator
+        if (player.getGameMode() == GameMode.SPECTATOR) return;
+
         // When 'registerWhenAlone' is set to false and
         // less than 2 players are on the server, disable death
         // recording for reviving.
@@ -67,6 +71,28 @@ public class DeathListener implements Listener {
 
         // Get location and schedule loop to spawn death location particles.
         Location deathLocation = player.getLocation();
+        World.Environment environment = deathLocation.getWorld().getEnvironment();
+
+        double minY;
+        double maxY;
+        
+        switch (environment) {
+            case NETHER:
+                minY = 0.0;
+                maxY = 127.0;
+                break;
+            case THE_END:
+                minY = 0.0;
+                maxY = 255.0;
+                break;
+            case NORMAL:
+            default:
+                minY = -64.0;
+                maxY = 319.0;
+                break;
+        }
+
+        deathLocation.setY(Math.clamp(deathLocation.getY(),minY,maxY));
         BukkitTask particleTask = this.pluginInstance.getServer().getScheduler()
                 .runTaskTimer(this.pluginInstance, () ->
                         this.spawnDeathLocationParticles(world, deathLocation),0, 5);
@@ -104,7 +130,7 @@ public class DeathListener implements Listener {
                 WorldUtil.getName(victim.getWorld())));
 
         if (this.reviveTimeout > 0) {
-            res.append(String.format(" You have %s to reach this location before they die forever!",
+            res.append(String.format(" You have %s to reach this location before they're dead forever!",
                     TimeUtil.getFormattedTimeSpan(this.reviveTimeout)));
         }
 
