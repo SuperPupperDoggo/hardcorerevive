@@ -8,6 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.lang.reflect.InvocationTargetException;
 
 public class PluginEnableListener implements Listener {
