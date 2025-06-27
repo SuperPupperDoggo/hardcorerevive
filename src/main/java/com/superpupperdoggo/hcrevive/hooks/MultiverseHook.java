@@ -7,7 +7,7 @@ import org.mvplugins.multiverse.external.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 
-public class MultiverseGeneratorPluginHook implements GeneratorPlugin {
+public class MultiverseHook implements GeneratorPlugin {
     @Override
     public @NotNull String getPluginName() {
         return "HardcoreRevive";
