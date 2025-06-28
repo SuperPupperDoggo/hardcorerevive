@@ -21,7 +21,7 @@ public class PurgatoryGenerator extends ChunkGenerator {
 
     private SimplexOctaveGenerator noise;
 
-    public PurgatoryGenerator() {}
+    //public PurgatoryGenerator() {}
 
     // Legacy noise-based generator (for compatibility)
     @Override
