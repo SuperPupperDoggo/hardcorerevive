@@ -1,5 +1,6 @@
 package de.zekro.hcrevive;
 
+import com.superpupperdoggo.hcrevive.generator.PurgatoryGenerator;
 import de.zekro.hcrevive.commands.FlushRegister;
 import de.zekro.hcrevive.deathregister.DeathRegister;
 import de.zekro.hcrevive.listeners.DeathListener;
@@ -58,5 +59,10 @@ public final class HardcoreRevive extends JavaPlugin {
     private void registerCommands() {
         Objects.requireNonNull(this.getCommand("hcrvFlushRegister"))
                 .setExecutor(new FlushRegister(this.deathRegister));
+    }
+
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
+        return new PurgatoryGenerator(this,id);
     }
 }
