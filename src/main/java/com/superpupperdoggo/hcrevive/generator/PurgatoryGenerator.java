@@ -3,6 +3,7 @@ package com.superpupperdoggo.hcrevive.generator;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
@@ -18,17 +19,21 @@ public class PurgatoryGenerator extends ChunkGenerator {
 
     private SimplexOctaveGenerator noise;
 
-    public PurgatoryGenerator() {
-    }
+    public PurgatoryGenerator() {}
 
     @Override
-    public ChunkData generateChunkData(World world, Random random, int chunkX, int chunkZ, BiomeGrid biome) {
-        // Initialize noise generator once per world
+    public ChunkData generateChunkData(World world,
+                                       Random random,
+                                       int chunkX,
+                                       int chunkZ,
+                                       BiomeGrid biome) {
+        // One-time noise initialization per world
         if (noise == null) {
             noise = new SimplexOctaveGenerator(world.getSeed(), 8);
             noise.setScale(1 / 16.0);
         }
 
+        // Prepare new chunk
         ChunkData chunk = createChunkData(world);
         int baseX = chunkX << 4;
         int baseZ = chunkZ << 4;
@@ -38,21 +43,20 @@ public class PurgatoryGenerator extends ChunkGenerator {
                 int worldX = baseX + x;
                 int worldZ = baseZ + z;
 
+                // Build column
                 for (int y = MIN_Y; y < MIN_Y + HEIGHT; y++) {
-                    // Bedrock floor and ceiling
+                    // Bedrock floor & ceiling
                     if (y < MIN_Y + BEDROCK_LAYERS || y >= MIN_Y + HEIGHT - BEDROCK_LAYERS) {
                         chunk.setBlock(x, y, z, Material.BEDROCK);
                     } else {
-                        // Carve caves: fill with black concrete where noise positive
-                        double value = noise.noise(worldX, y, worldZ, 0.5, 0.5);
-                        if (value > 0) {
+                        // Carve caves: fill with concrete if noise > 0
+                        if (noise.noise(worldX, y, worldZ, 0.5, 0.5) > 0) {
                             chunk.setBlock(x, y, z, Material.BLACK_CONCRETE);
                         }
-                        // Else leave as air (default)
                     }
                 }
 
-                // Set biome for column
+                // Assign basalt-deltas biome per column
                 biome.setBiome(x, z, Biome.BASALT_DELTAS);
             }
         }
@@ -61,19 +65,24 @@ public class PurgatoryGenerator extends ChunkGenerator {
     }
 
     @Override
-    public List<Biome> getDefaultBiomes(WorldInfo worldInfo) {
-        return Collections.singletonList(Biome.BASALT_DELTAS);
+    public BiomeProvider getDefaultBiomeProvider(WorldInfo worldInfo) {
+        return new BiomeProvider() {
+            @Override
+            public Biome getBiome(WorldInfo info, int x, int y, int z) {
+                return Biome.BASALT_DELTAS;
+            }
+
+            @Override
+            public List<Biome> getBiomes(WorldInfo info) {
+                return Collections.singletonList(Biome.BASALT_DELTAS);
+            }
+        };
     }
 
-    @Override
-    public Biome getDefaultBiome(WorldInfo worldInfo, int x, int y, int z) {
-        return Biome.BASALT_DELTAS;
-    }
-
-    // Disable all vanilla noise/surface/caves/decorations/mobs
-    @Override public boolean shouldGenerateNoise(WorldInfo worldInfo, Random random, int x, int z)       { return true;  }
-    @Override public boolean shouldGenerateSurface(WorldInfo worldInfo, Random random, int x, int z)     { return false; }
-    @Override public boolean shouldGenerateCaves(WorldInfo worldInfo, Random random, int x, int z)       { return false; }
-    @Override public boolean shouldGenerateDecorations(WorldInfo worldInfo, Random random, int x, int z) { return false; }
-    @Override public boolean shouldGenerateMobs(WorldInfo worldInfo, Random random, int x, int z)        { return false; }
+    // Disable vanilla noise/surface/caves/decorations/mobs pipelines
+    @Override public boolean shouldGenerateNoise(WorldInfo info, Random random, int x, int z)       { return true;  }
+    @Override public boolean shouldGenerateSurface(WorldInfo info, Random random, int x, int z)     { return false; }
+    @Override public boolean shouldGenerateCaves(WorldInfo info, Random random, int x, int z)       { return false; }
+    @Override public boolean shouldGenerateDecorations(WorldInfo info, Random random, int x, int z) { return false; }
+    @Override public boolean shouldGenerateMobs(WorldInfo info, Random random, int x, int z)        { return false; }
 }
