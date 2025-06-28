@@ -66,6 +66,6 @@ public final class HardcoreRevive extends JavaPlugin {
 
     @Override
     public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
-        return new PurgatoryGenerator(this,id);
+        return new PurgatoryGenerator();
     }
 }
