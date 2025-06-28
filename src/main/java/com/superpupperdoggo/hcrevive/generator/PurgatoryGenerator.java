@@ -32,8 +32,8 @@ public class PurgatoryGenerator extends ChunkGenerator {
                               ChunkData chunk) {
         // Init noise once per world
         if (noise == null) {
-            noise = new SimplexOctaveGenerator(worldInfo.getSeed(), 8);
-            noise.setScale(1 / 16.0);
+            noise = new SimplexOctaveGenerator(worldInfo.getSeed(), 4);
+            noise.setScale(1 / 32.0);
         }
 
         int baseX = chunkX << 4;
@@ -47,8 +47,11 @@ public class PurgatoryGenerator extends ChunkGenerator {
                 for (int y = MIN_Y; y < MIN_Y + HEIGHT; y++) {
                     if (y < MIN_Y + BEDROCK_LAYERS || y >= MIN_Y + HEIGHT - BEDROCK_LAYERS) {
                         chunk.setBlock(x, y, z, Material.BEDROCK);
-                    } else if (noise.noise(worldX, y, worldZ, 0.5, 0.5) > 0) {
-                        chunk.setBlock(x, y, z, Material.BLACK_CONCRETE);
+                    } else {
+                        double sample = noise.noise(worldX, y, worldZ, 1.0, 1.0);
+                        if (sample > 0.2) {
+                            chunk.setBlock(x, y, z, Material.BLACK_CONCRETE);
+                        }
                     }
                 }
             }
