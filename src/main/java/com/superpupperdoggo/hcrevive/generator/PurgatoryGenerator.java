@@ -51,7 +51,8 @@ public class PurgatoryGenerator extends ChunkGenerator {
                         double sample = noise.noise(worldX, y, worldZ, 1.0, 1.0);
                         if (sample > 0.2) {
                             chunk.setBlock(x, y, z, Material.BLACK_CONCRETE);
-                        }
+                        } else {
+                            chunk.setBlock(x, y, z, Material.AIR);
                     }
                 }
             }
