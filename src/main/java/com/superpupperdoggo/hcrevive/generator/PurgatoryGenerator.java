@@ -46,7 +46,11 @@ public class PurgatoryGenerator extends ChunkGenerator {
 
                 for (int y = MIN_Y; y < MIN_Y + HEIGHT; y++) {
                     if (y < MIN_Y + BEDROCK_LAYERS || y >= MIN_Y + HEIGHT - BEDROCK_LAYERS) {
-                        chunk.setBlock(x, y, z, Material.BEDROCK);
+                        if (y != MIN_Y || y != MAX_Y) {
+                            chunk.setBlock(x,y,z,Material.BLACK_CONCRETE)
+                        } else {
+                            chunk.setBlock(x, y, z, Material.BEDROCK);
+                        }
                     } else {
                         double sample = noise.noise(worldX, y, worldZ, 1.0, 1.0);
                         if (sample > 0.2) {
