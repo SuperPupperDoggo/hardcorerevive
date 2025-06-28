@@ -46,7 +46,7 @@ public class PurgatoryGenerator extends ChunkGenerator {
 
                 for (int y = MIN_Y; y < MIN_Y + HEIGHT; y++) {
                     if (y < MIN_Y + BEDROCK_LAYERS || y >= MIN_Y + HEIGHT - BEDROCK_LAYERS) {
-                        if (y != MIN_Y || y != MAX_Y) {
+                        if (y != MIN_Y || y != MIN_Y + HEIGHT) {
                             chunk.setBlock(x,y,z,Material.BLACK_CONCRETE);
                         } else {
                             chunk.setBlock(x, y, z, Material.BEDROCK);
