@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class PurgatoryGenerator extends ChunkGenerator {
     private static final int MIN_Y          = 0;
-    private static final int HEIGHT         = 128;
+    private static final int HEIGHT         = 256;
     private static final int BEDROCK_LAYERS = 5;
 
     private SimplexOctaveGenerator noise;
