@@ -39,7 +39,7 @@ public class DeathListener implements Listener {
     private final DeathRegister deathRegister;
     private final Logger logger;
     private final LuckPerms luckPerms = LuckPermsProvider.get();
-    MultiverseCoreApi coreApi = MultiverseCoreApi.get();
+    private final MultiverseCoreApi coreApi = MultiverseCoreApi.get();
     
 
     // --- CONFIG VALUES -----------------------
@@ -48,6 +48,8 @@ public class DeathListener implements Listener {
     private String reviveWorld;
     private String permadeathWorld;
     private String permadeathAliveGroup;
+    private final boolean permadeathDoEject;
+    private String permadeathEjectDestination;
     // -----------------------------------------
 
     /**
