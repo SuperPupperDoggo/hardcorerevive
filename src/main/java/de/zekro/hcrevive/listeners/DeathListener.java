@@ -122,7 +122,7 @@ public class DeathListener implements Listener {
         // Send a message to the death victim.
         player.sendMessage(this.getDeathVictimMessage());
         } else {
-            if (world.getName() == this.pluginInstance.getConfig().getString("permadeathWorld", "purehardcore")) {
+            if (world.getName().equals(this.pluginInstance.getConfig().getString("permadeathWorld", "purehardcore"))) {
                 player.sendMessage("You have died in Pure Hardcore, you cannot rejoin until next reset!");
                 // Modify user on the main thread (okay because user is online)
                 luckPerms.getUserManager().modifyUser(player.getUniqueId(), user -> {
