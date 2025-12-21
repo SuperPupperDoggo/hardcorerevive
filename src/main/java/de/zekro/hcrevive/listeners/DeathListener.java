@@ -68,7 +68,7 @@ public class DeathListener implements Listener {
         Player player = event.getEntity();
         World world = player.getWorld();
 
-        if (world.getName() == this.pluginInstance.getConfig().getString("reviveWorld", "hardcore")) {
+        if (world.getName().equals(this.pluginInstance.getConfig().getString("reviveWorld", "hardcore"))) {
 
         // Do not run if player is already a spectator
         if (player.getGameMode() == GameMode.SPECTATOR) return;
