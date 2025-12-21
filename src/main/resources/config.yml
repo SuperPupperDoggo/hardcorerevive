@@ -33,3 +33,11 @@ sneakFuzziness: 5
 # is not set, at the world spawn point.
 # Default: true
 reviveAtDeathPosition: true
+
+# World to enable the revive system in
+# Default: 'hardcore'
+reviveWorld: 'hardcore'
+
+# World to enable permadeath in
+# Default: 'purehardcore'
+permadeathWorld: 'purehardcore'
