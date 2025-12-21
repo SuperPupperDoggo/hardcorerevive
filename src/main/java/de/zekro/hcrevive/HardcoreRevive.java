@@ -7,11 +7,14 @@ import de.zekro.hcrevive.listeners.DeathListener;
 import de.zekro.hcrevive.listeners.QuitListener;
 import de.zekro.hcrevive.listeners.SneakListener;
 import com.superpupperdoggo.hcrevive.listeners.PluginEnableListener;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServiceRegisterEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 import org.jetbrains.annotations.NotNull;
