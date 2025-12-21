@@ -66,6 +66,7 @@ public class DeathListener implements Listener {
     void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         World world = player.getWorld();
+        private final LuckPerms luckPerms = LuckPermsProvider.get();
 
         if (world.getName() == this.pluginInstance.getConfig().getString("reviveWorld", "hardcore")) {
 
@@ -122,11 +123,6 @@ public class DeathListener implements Listener {
         player.sendMessage(this.getDeathVictimMessage());
         } else {
             if (world.getName() == this.pluginInstance.getConfig().getString("permadeathWorld", "purehardcore")) {
-                User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
-                if (group == null) {
-                    // group doesn't exist.
-                    return;
-                }
                 // Modify user on the main thread (okay because user is online)
                 luckPerms.getUserManager().modifyUser(player.getUniqueId(), user -> {
                     InheritanceNode node = InheritanceNode.builder(this.pluginInstance.getConfig().getString("permadeathAliveGroup", "hardcore_alive")).build();
