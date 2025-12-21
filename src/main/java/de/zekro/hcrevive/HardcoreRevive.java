@@ -65,7 +65,7 @@ public final class HardcoreRevive extends JavaPlugin implements Listener {
             registerListeners();
 
             // Optional: unregister this listener now
-            HandlerList.unregisterAll(this);
+            HandlerList.unregisterAll((Listener) this);
         }
     }
 
