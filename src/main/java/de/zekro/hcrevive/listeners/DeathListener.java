@@ -148,9 +148,6 @@ public class DeathListener implements Listener {
                     coreApi.getSafetyTeleporter().to(destination)
                             .checkSafety(false)
                             .teleport(player);
-                })
-                .onEmpty(() -> {
-                    this.logger.warning("Failed to parse destination!");
                 });
                 }
             }
