@@ -37,6 +37,7 @@ public class DeathListener implements Listener {
     private final HardcoreRevive pluginInstance;
     private final DeathRegister deathRegister;
     private final Logger logger;
+    private final LuckPerms luckPerms = LuckPermsProvider.get();
 
     // --- CONFIG VALUES -----------------------
     private final int reviveTimeout;
@@ -44,7 +45,7 @@ public class DeathListener implements Listener {
     // -----------------------------------------
 
     /**
-     * Initializes an ew instance of {@link DeathListener}.
+     * Initializes a new instance of {@link DeathListener}.
      * @param pluginInstance The plugin instance
      * @param deathRegister The death register instance.
      * @param logger The logger instance.
@@ -66,7 +67,6 @@ public class DeathListener implements Listener {
     void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         World world = player.getWorld();
-        private final LuckPerms luckPerms = LuckPermsProvider.get();
 
         if (world.getName() == this.pluginInstance.getConfig().getString("reviveWorld", "hardcore")) {
 
