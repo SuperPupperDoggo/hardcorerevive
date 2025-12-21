@@ -9,6 +9,7 @@ import de.zekro.hcrevive.listeners.SneakListener;
 import com.superpupperdoggo.hcrevive.listeners.PluginEnableListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServiceRegisterEvent;
 import org.bukkit.generator.ChunkGenerator;
@@ -22,9 +23,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public final class HardcoreRevive extends JavaPlugin {
+public final class HardcoreRevive extends JavaPlugin implements Listener {
 
     private DeathRegister deathRegister;
+    private MultiverseCoreApi multiverse;
 
     @Override
     public void onEnable() {
