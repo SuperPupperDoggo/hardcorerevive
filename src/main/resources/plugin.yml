@@ -8,7 +8,6 @@ description: Revive people in hardcore mode.
 website: https://github.com/SuperPupperDoggo/HardcoreRevive
 softdepend: [Multiverse-Core]
 load: STARTUP
-loadbefore: [Multiverse-Core, Multiworld]
 
 commands:
   hcrvFlushRegister:
