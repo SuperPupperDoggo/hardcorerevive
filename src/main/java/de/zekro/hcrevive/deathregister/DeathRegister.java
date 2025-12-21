@@ -146,7 +146,19 @@ public class DeathRegister {
 
     section.getKeys(false).forEach(key -> {
         String base     = "deaths." + key + ".";
-        UUID   uuid     = UUID.fromString(cfg.getString(base + "uuid"));
+        String uuidStr = cfg.getString(base + "uuid");
+        if (uuidStr == null || uuidStr.isEmpty()) {
+            plugin.getLogger().warning("Skipping death entry " + key + " (missing uuid)");
+            return;
+        }
+        
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(uuidStr);
+        } catch (IllegalArgumentException ex) {
+            plugin.getLogger().warning("Skipping death entry " + key + " (invalid uuid: " + uuidStr + ")");
+            return;
+        }
         String worldName= cfg.getString(base + "world");
         double x        = cfg.getDouble(base + "x");
         double y        = cfg.getDouble(base + "y");
