@@ -140,8 +140,10 @@ public class DeathRegister {
     if (!dataFile.exists()) return;
 
     YamlConfiguration cfg = YamlConfiguration.loadConfiguration(dataFile);
+    ConfigurationSection section = cfg.getConfigurationSection("deaths");
+    if (section == null) return;
 
-    cfg.getKeys(false).forEach(key -> {
+    section.getKeys(false).forEach(key -> {
         String base     = "deaths." + key + ".";
         UUID   uuid     = UUID.fromString(cfg.getString(base + "uuid"));
         String worldName= cfg.getString(base + "world");
