@@ -150,7 +150,7 @@ public class DeathListener implements Listener {
                             .teleport(player);
                 })
                 .onEmpty(() -> {
-                    this.getLogger().warning("Failed to parse destination!");
+                    this.logger.warning("Failed to parse destination!");
                 });
                 }
             }
