@@ -143,7 +143,7 @@ public class DeathListener implements Listener {
                     user.data().remove(node);
                 });
                 if (this.permadeathDoEject) {
-                coreApi.getDestinationsProvider().parseDestination(this.permadeathEjectLocation)
+                coreApi.getDestinationsProvider().parseDestination(this.permadeathEjectDestination)
                 .peek(destination -> {
                     coreApi.getSafetyTeleporter().to(destination)
                             .checkSafety(false)
