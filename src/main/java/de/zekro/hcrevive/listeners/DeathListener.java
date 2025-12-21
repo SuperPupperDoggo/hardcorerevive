@@ -21,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitTask;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.lang.Math;
@@ -38,10 +39,15 @@ public class DeathListener implements Listener {
     private final DeathRegister deathRegister;
     private final Logger logger;
     private final LuckPerms luckPerms = LuckPermsProvider.get();
+    MultiverseCoreApi coreApi = MultiverseCoreApi.get();
+    
 
     // --- CONFIG VALUES -----------------------
     private final int reviveTimeout;
     private final boolean registerWhenAlone;
+    private string reviveWorld;
+    private string permadeathWorld;
+    private string permadeathAliveGroup;
     // -----------------------------------------
 
     /**
@@ -57,6 +63,11 @@ public class DeathListener implements Listener {
 
         this.reviveTimeout = this.pluginInstance.getConfig().getInt("reviveTimeout", 0);
         this.registerWhenAlone = this.pluginInstance.getConfig().getBoolean("registerWhenAlone", true);
+        this.reviveWorld = this.pluginInstance.getConfig().getString("reviveWorld", "hardcore");
+        this.permadeathWorld = this.pluginInstance.getConfig().getString("permadeathWorld", "purehardcore");
+        this.permadeathAliveGroup = this.pluginInstance.getConfig().getString("permadeathAliveGroup", "hardcore_alive");
+        this.permadeathDoEject = this.pluginInstance.getConfig().getBoolean("permadeathDoEject", false);
+        this.permadeathEjectDestination = this.pluginInstance.getConfig().getString("permadeathEjectLocation", "none");
     }
 
     /**
@@ -68,7 +79,7 @@ public class DeathListener implements Listener {
         Player player = event.getEntity();
         World world = player.getWorld();
 
-        if (world.getName().equals(this.pluginInstance.getConfig().getString("reviveWorld", "hardcore"))) {
+        if (world.getName().equals(this.reviveWorld)) {
 
         // Do not run if player is already a spectator
         if (player.getGameMode() == GameMode.SPECTATOR) return;
@@ -122,13 +133,24 @@ public class DeathListener implements Listener {
         // Send a message to the death victim.
         player.sendMessage(this.getDeathVictimMessage());
         } else {
-            if (world.getName().equals(this.pluginInstance.getConfig().getString("permadeathWorld", "purehardcore"))) {
+            if (world.getName().equals(this.permadeathWorld)) {
                 player.sendMessage("You have died in Pure Hardcore, you cannot rejoin until next reset!");
                 // Modify user on the main thread (okay because user is online)
                 luckPerms.getUserManager().modifyUser(player.getUniqueId(), user -> {
                     InheritanceNode node = InheritanceNode.builder(this.pluginInstance.getConfig().getString("permadeathAliveGroup", "hardcore_alive")).build();
                     user.data().remove(node);
                 });
+                if (this.permadeathDoEject) {
+                coreApi.getDestinationsProvider().parseDestination(this.permadeathEjectLocation)
+                .peek(destination -> {
+                    coreApi.getSafetyTeleporter().to(destination)
+                            .checkSafety(false)
+                            .teleport(player);
+                })
+                .onEmpty(() -> {
+                    this.getLogger().warning("Failed to parse destination!");
+                });
+                }
             }
         }
 
