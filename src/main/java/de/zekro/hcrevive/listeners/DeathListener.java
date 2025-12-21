@@ -39,6 +39,7 @@ public class DeathListener implements Listener {
     private final DeathRegister deathRegister;
     private final Logger logger;
     private final LuckPerms luckPerms = LuckPermsProvider.get();
+    private final MultiverseCoreApi;
     
 
     // --- CONFIG VALUES -----------------------
@@ -69,6 +70,7 @@ public class DeathListener implements Listener {
         this.permadeathAliveGroup = this.pluginInstance.getConfig().getString("permadeathAliveGroup", "hardcore_alive");
         this.permadeathDoEject = this.pluginInstance.getConfig().getBoolean("permadeathDoEject", false);
         this.permadeathEjectDestination = this.pluginInstance.getConfig().getString("permadeathEjectLocation", "none");
+        this.coreApi = coreApi;
     }
 
     /**
