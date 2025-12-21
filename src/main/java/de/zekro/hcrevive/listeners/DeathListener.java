@@ -45,9 +45,9 @@ public class DeathListener implements Listener {
     // --- CONFIG VALUES -----------------------
     private final int reviveTimeout;
     private final boolean registerWhenAlone;
-    private string reviveWorld;
-    private string permadeathWorld;
-    private string permadeathAliveGroup;
+    private String reviveWorld;
+    private String permadeathWorld;
+    private String permadeathAliveGroup;
     // -----------------------------------------
 
     /**
