@@ -35,9 +35,37 @@ public final class HardcoreRevive extends JavaPlugin {
         }
 
         this.deathRegister = new DeathRegister(this);
+        // Try immediately (covers reloads)
+        hookMultiverse();
 
+        // If not ready yet, listen for registration
+        if (multiverse == null) {
+            Bukkit.getPluginManager().registerEvents(this, this);
+        }
         this.registerListeners();
         this.registerCommands();
+    }
+
+    private void hookMultiverse() {
+        RegisteredServiceProvider<MultiverseCoreApi> provider =
+                Bukkit.getServicesManager().getRegistration(MultiverseCoreApi.class);
+
+        if (provider != null) {
+            multiverse = provider.getProvider();
+            getLogger().info("Hooked into Multiverse-Core API");
+
+            registerListeners();
+
+            // Optional: unregister this listener now
+            HandlerList.unregisterAll(this);
+        }
+    }
+
+    @EventHandler
+    public void onServiceRegister(ServiceRegisterEvent event) {
+        if (event.getProvider().getService() == MultiverseCoreApi.class) {
+            hookMultiverse();
+        }
     }
 
     @Override
