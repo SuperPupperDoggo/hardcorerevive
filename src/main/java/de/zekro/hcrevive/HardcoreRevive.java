@@ -12,6 +12,7 @@ import org.bukkit.event.server.ServiceRegisterEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 import org.jetbrains.annotations.NotNull;
 
