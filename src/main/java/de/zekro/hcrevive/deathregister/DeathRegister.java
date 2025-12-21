@@ -3,6 +3,7 @@ package de.zekro.hcrevive.deathregister;
 import de.zekro.hcrevive.HardcoreRevive;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.Particle;
