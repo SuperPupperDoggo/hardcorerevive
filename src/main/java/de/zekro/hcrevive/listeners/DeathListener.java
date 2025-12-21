@@ -4,6 +4,14 @@ import de.zekro.hcrevive.HardcoreRevive;
 import de.zekro.hcrevive.deathregister.DeathRegister;
 import de.zekro.hcrevive.util.TimeUtil;
 import de.zekro.hcrevive.util.WorldUtil;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.types.InheritanceNode;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -59,6 +67,8 @@ public class DeathListener implements Listener {
         Player player = event.getEntity();
         World world = player.getWorld();
 
+        if (world.getName() == this.pluginInstance.getConfig().getString("reviveWorld", "hardcore")) {
+
         // Do not run if player is already a spectator
         if (player.getGameMode() == GameMode.SPECTATOR) return;
 
@@ -110,6 +120,20 @@ public class DeathListener implements Listener {
 
         // Send a message to the death victim.
         player.sendMessage(this.getDeathVictimMessage());
+        } else {
+            if (world.getName() == this.pluginInstance.getConfig().getString("permadeathWorld", "purehardcore")) {
+                User user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
+                if (group == null) {
+                    // group doesn't exist.
+                    return;
+                }
+                // Modify user on the main thread (okay because user is online)
+                luckPerms.getUserManager().modifyUser(player.getUniqueId(), user -> {
+                    InheritanceNode node = InheritanceNode.builder(this.pluginInstance.getConfig().getString("permadeathAliveGroup", "hardcore_alive")).build();
+                    user.data().remove(node);
+                });
+            }
+        }
 
         this.logger.log(Level.INFO, String.format(
                 "Player %s died in %s", player.getName(), WorldUtil.getName(world)));
