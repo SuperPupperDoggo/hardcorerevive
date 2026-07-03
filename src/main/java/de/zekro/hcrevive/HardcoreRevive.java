@@ -87,7 +87,7 @@ public final class HardcoreRevive extends JavaPlugin implements Listener {
     private void registerListeners() {
         PluginManager pm = getServer().getPluginManager();
 
-        pm.registerEvents(new DeathListener(this, multiverse, this.deathRegister, this.getLogger()), this);
+        pm.registerEvents(new DeathListener(this, this.deathRegister, this.getLogger()), this);
         pm.registerEvents(new SneakListener(this, this.deathRegister), this);
         pm.registerEvents(new QuitListener(this.deathRegister), this);
         pm.registerEvents(new QuitListener(this.deathRegister), this);
