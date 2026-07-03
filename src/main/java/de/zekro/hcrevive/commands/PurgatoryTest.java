@@ -20,15 +20,12 @@ public class PurgatoryTest implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "You don't have the permission to use this command.");
             return false;
         }
-        this.logger.log(Level.INFO, String.format(
+        sender.sendMessage(String.format(
                         "Worlds: %s", player.getServer().getWorlds()));
 
-        World target = player.getServer().getWorld(this.levelName + "_purgatory_purgatory");
+        World target = player.getServer().getWorld("hardcore_purgatory_purgatory");
         if (target != null) {
-            player.teleport(new Location(target, this.purgatoryX, this.purgatoryY, this.purgatoryZ));
-        } else {
-            this.logger.log(Level.SEVERE, String.format(
-                "Failed to teleport player %s to purgatory!", player.getName()));
+            player.teleport(new Location(target, 0, 64, 0));
         }
 
         return true;
