@@ -4,12 +4,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.World;
+import org.bukkit.Player;
 
 /**
  * Command executor for /purgatorytest command.
  */
 public class PurgatoryTest implements CommandExecutor {
-
+    Player player;
     public PurgatoryTest() {
         super();
     }
@@ -20,6 +22,7 @@ public class PurgatoryTest implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "You don't have the permission to use this command.");
             return false;
         }
+        player = (Player)sender
         sender.sendMessage(String.format(
                         "Worlds: %s", player.getServer().getWorlds()));
 
