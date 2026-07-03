@@ -100,8 +100,8 @@ public final class HardcoreRevive extends JavaPlugin implements Listener {
     private void registerCommands() {
         Objects.requireNonNull(this.getCommand("hcrvFlushRegister"))
                 .setExecutor(new FlushRegister(this.deathRegister));
-        Objects.requireNonNull(this.getCommand("purgatorytest"))
-                .setExecutor(new PurgatoryTest());
+        //Objects.requireNonNull(this.getCommand("purgatorytest"))
+        //        .setExecutor(new PurgatoryTest(this));
     }
 
     @Override
