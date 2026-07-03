@@ -13,8 +13,8 @@ import org.bukkit.Location;
  */
 public class PurgatoryTest implements CommandExecutor {
     Player player;
+    
     public PurgatoryTest() {
-        super();
     }
 
     @Override
