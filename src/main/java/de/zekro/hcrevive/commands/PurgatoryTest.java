@@ -10,6 +10,10 @@ import org.bukkit.command.CommandSender;
  */
 public class PurgatoryTest implements CommandExecutor {
 
+    public PurgatoryTest() {
+        super();
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.isOp()) {
