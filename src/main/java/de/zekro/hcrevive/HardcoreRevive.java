@@ -4,6 +4,7 @@ import com.superpupperdoggo.hcrevive.generator.PurgatoryGenerator;
 import de.zekro.hcrevive.commands.FlushRegister;
 import de.zekro.hcrevive.deathregister.DeathRegister;
 import de.zekro.hcrevive.listeners.DeathListener;
+import de.zekro.hcrevive.listeners.RespawnListener;
 import de.zekro.hcrevive.listeners.QuitListener;
 import de.zekro.hcrevive.listeners.SneakListener;
 import com.superpupperdoggo.hcrevive.listeners.PluginEnableListener;
