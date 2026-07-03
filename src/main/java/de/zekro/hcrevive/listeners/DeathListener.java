@@ -46,6 +46,9 @@ public class DeathListener implements Listener {
     private final int reviveTimeout;
     private final boolean registerWhenAlone;
     private String levelName;
+    private int purgatoryX;
+    private int purgatoryY;
+    private int purgatoryZ;
     private boolean permadeath;
     private String permadeathAliveGroup;
     private final boolean permadeathDoEject;
