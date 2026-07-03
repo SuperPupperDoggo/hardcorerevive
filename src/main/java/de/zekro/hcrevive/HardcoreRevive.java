@@ -53,7 +53,7 @@ public final class HardcoreRevive extends JavaPlugin implements Listener {
         this.registerCommands();
     }
 
-    private void hookMultiverse() {
+    /*private void hookMultiverse() {
         RegisteredServiceProvider<MultiverseCoreApi> provider =
                 Bukkit.getServicesManager().getRegistration(MultiverseCoreApi.class);
 
@@ -66,13 +66,13 @@ public final class HardcoreRevive extends JavaPlugin implements Listener {
             // Optional: unregister this listener now
             HandlerList.unregisterAll((Listener) this);
         }
-    }
+    }*/
 
     @EventHandler
     public void onServiceRegister(ServiceRegisterEvent event) {
-        if (event.getProvider().getService() == MultiverseCoreApi.class) {
+        /*if (event.getProvider().getService() == MultiverseCoreApi.class) {
             hookMultiverse();
-        }
+        }*/
     }
 
     @Override
