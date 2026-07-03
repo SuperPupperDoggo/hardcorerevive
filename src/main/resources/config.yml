@@ -36,8 +36,13 @@ reviveAtDeathPosition: true
 
 # World to enable the revive system in
 # Default: 'hardcore'
-reviveWorld: 'hardcore'
+levelName: 'hardcore'
 
-# World to enable permadeath in
-# Default: 'purehardcore'
-permadeathWorld: 'purehardcore'
+# Set a spawn point for purgatory
+purgatoryX: 0
+purgatoryY: 64
+purgatoryZ: 0
+
+# Whether to enable permadeath
+# Default: false
+permadeath: false
