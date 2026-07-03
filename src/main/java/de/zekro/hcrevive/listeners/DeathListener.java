@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -149,7 +150,7 @@ public class DeathListener implements Listener {
         // Send a message to the death victim.
         player.sendMessage(this.getDeathVictimMessage());
         player.setGameMode(GameMode.SURVIVAL);
-        World target = Bukkit.getWorld(this.levelName + "_purgatory_purgatory");
+        World target = Server.getWorld(this.levelName + "_purgatory_purgatory");
         if (target != null) {
             player.teleport(new Location(target, this.purgatoryX, this.purgatoryY, this.purgatoryZ));
         } else {
