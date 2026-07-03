@@ -21,7 +21,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitTask;
-import org.mvplugins.multiverse.core.MultiverseCoreApi;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.lang.Math;
@@ -39,7 +38,6 @@ public class DeathListener implements Listener {
     private final DeathRegister deathRegister;
     private final Logger logger;
     private final LuckPerms luckPerms = LuckPermsProvider.get();
-    private final MultiverseCoreApi coreApi;
     
 
     // --- CONFIG VALUES -----------------------
@@ -76,7 +74,6 @@ public class DeathListener implements Listener {
         this.permadeathAliveGroup = this.pluginInstance.getConfig().getString("permadeathAliveGroup", "hardcore_alive");
         this.permadeathDoEject = this.pluginInstance.getConfig().getBoolean("permadeathDoEject", false);
         this.permadeathEjectDestination = this.pluginInstance.getConfig().getString("permadeathEjectLocation", "none");
-        this.coreApi = coreApi;
     }
 
     /**
@@ -95,12 +92,7 @@ public class DeathListener implements Listener {
                   user.data().remove(node);
             });
              if (this.permadeathDoEject) {
-             this.coreApi.getDestinationsProvider().parseDestination(this.permadeathEjectDestination)
-             .peek(destination -> {
-                 this.coreApi.getSafetyTeleporter().to(destination)
-                        .checkSafety(false)
-                        .teleport(player);
-            });
+             //nothing :)
             }
         } else {
 
