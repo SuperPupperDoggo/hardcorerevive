@@ -44,12 +44,12 @@ public final class HardcoreRevive extends JavaPlugin implements Listener {
 
         this.deathRegister = new DeathRegister(this);
         // Try immediately (covers reloads)
-        hookMultiverse();
+        //hookMultiverse();
 
         // If not ready yet, listen for registration
-        if (multiverse == null) {
-            Bukkit.getPluginManager().registerEvents(this, this);
-        }
+        //if (multiverse == null) {
+        //    Bukkit.getPluginManager().registerEvents(this, this);
+        //}
         this.registerCommands();
     }
 
