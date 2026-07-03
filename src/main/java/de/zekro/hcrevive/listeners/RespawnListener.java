@@ -68,7 +68,7 @@ public class RespawnListener implements Listener {
         player.setGameMode(GameMode.SURVIVAL);
         World target = player.getServer().getWorld(this.levelName + "_purgatory_purgatory");
         //terrible console command hack
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("execute in purgatory:purgatory run tp %s %s %s %s",player.getName(),this.purgatoryX, this.purgatoryY, this.purgatoryZ);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("execute in purgatory:purgatory run tp %s %s %s %s",player.getName(),this.purgatoryX, this.purgatoryY, this.purgatoryZ));
         if (target != null) {
             event.setRespawnLocation(new Location(target, this.purgatoryX, this.purgatoryY, this.purgatoryZ));
         } else {
