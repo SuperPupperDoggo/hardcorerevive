@@ -153,7 +153,7 @@ public class DeathListener implements Listener {
             player.teleport(new Location(target, this.purgatoryX, this.purgatoryY, this.purgatoryZ));
         } else {
             this.logger.log(Level.SEVERE, String.format(
-                "Failed to teleport player %s to purgatory!", player.getName())
+                "Failed to teleport player %s to purgatory!", player.getName());
         }
 
         this.logger.log(Level.INFO, String.format(
