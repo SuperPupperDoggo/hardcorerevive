@@ -45,8 +45,8 @@ public class DeathListener implements Listener {
     // --- CONFIG VALUES -----------------------
     private final int reviveTimeout;
     private final boolean registerWhenAlone;
-    private String reviveWorld;
-    private String permadeathWorld;
+    private String levelName;
+    private boolean permadeath;
     private String permadeathAliveGroup;
     private final boolean permadeathDoEject;
     private String permadeathEjectDestination;
@@ -65,8 +65,11 @@ public class DeathListener implements Listener {
 
         this.reviveTimeout = this.pluginInstance.getConfig().getInt("reviveTimeout", 0);
         this.registerWhenAlone = this.pluginInstance.getConfig().getBoolean("registerWhenAlone", true);
-        this.reviveWorld = this.pluginInstance.getConfig().getString("reviveWorld", "hardcore");
-        this.permadeathWorld = this.pluginInstance.getConfig().getString("permadeathWorld", "purehardcore");
+        this.levelName = this.pluginInstance.getConfig().getString("levelName", "hardcore");
+        this.purgatoryX = this.pluginInstance.getConfig().getInt("purgatoryX", 0);
+        this.purgatoryY = this.pluginInstance.getConfig().getInt("purgatoryY", 64);
+        this.purgatoryZ = this.pluginInstance.getConfig().getInt("purgatoryZ", 0);
+        this.permadeath = this.pluginInstance.getConfig().getBoolean("permadeath", false);
         this.permadeathAliveGroup = this.pluginInstance.getConfig().getString("permadeathAliveGroup", "hardcore_alive");
         this.permadeathDoEject = this.pluginInstance.getConfig().getBoolean("permadeathDoEject", false);
         this.permadeathEjectDestination = this.pluginInstance.getConfig().getString("permadeathEjectLocation", "none");
@@ -81,8 +84,22 @@ public class DeathListener implements Listener {
     void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         World world = player.getWorld();
-
-        if (world.getName().equals(this.reviveWorld)) {
+        if (this.permadeath) {
+              player.sendMessage("You have died in Pure Hardcore, you cannot rejoin until next reset!");
+              // Modify user on the main thread (okay because user is online)
+             luckPerms.getUserManager().modifyUser(player.getUniqueId(), user -> {
+                  InheritanceNode node = InheritanceNode.builder(this.pluginInstance.getConfig().getString("permadeathAliveGroup", "hardcore_alive")).build();
+                  user.data().remove(node);
+            });
+             if (this.permadeathDoEject) {
+             this.coreApi.getDestinationsProvider().parseDestination(this.permadeathEjectDestination)
+             .peek(destination -> {
+                 this.coreApi.getSafetyTeleporter().to(destination)
+                        .checkSafety(false)
+                        .teleport(player);
+            });
+            }
+        } else {
 
         // Do not run if player is already a spectator
         if (player.getGameMode() == GameMode.SPECTATOR) return;
@@ -135,27 +152,18 @@ public class DeathListener implements Listener {
 
         // Send a message to the death victim.
         player.sendMessage(this.getDeathVictimMessage());
+        player.setGameMode(GameMode.SURVIVAL);
+        World target = Bukkit.getWorld(this.levelName + "_purgatory_purgatory");
+        if (target != null) {
+            player.teleport(new Location(target, this.purgatoryX, this.purgatoryY, this.purgatoryZ));
         } else {
-            if (world.getName().equals(this.permadeathWorld)) {
-                player.sendMessage("You have died in Pure Hardcore, you cannot rejoin until next reset!");
-                // Modify user on the main thread (okay because user is online)
-                luckPerms.getUserManager().modifyUser(player.getUniqueId(), user -> {
-                    InheritanceNode node = InheritanceNode.builder(this.pluginInstance.getConfig().getString("permadeathAliveGroup", "hardcore_alive")).build();
-                    user.data().remove(node);
-                });
-                if (this.permadeathDoEject) {
-                this.coreApi.getDestinationsProvider().parseDestination(this.permadeathEjectDestination)
-                .peek(destination -> {
-                    this.coreApi.getSafetyTeleporter().to(destination)
-                            .checkSafety(false)
-                            .teleport(player);
-                });
-                }
-            }
+            this.logger.log(Level.SEVERE, String.format(
+                "Failed to teleport player %s to purgatory!", player.getName())
         }
 
         this.logger.log(Level.INFO, String.format(
                 "Player %s died in %s", player.getName(), WorldUtil.getName(world)));
+        }
     }
 
     /**
