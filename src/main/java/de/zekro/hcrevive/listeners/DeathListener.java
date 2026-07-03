@@ -59,7 +59,7 @@ public class DeathListener implements Listener {
      * @param deathRegister The death register instance.
      * @param logger The logger instance.
      */
-    public DeathListener(HardcoreRevive pluginInstance, MultiverseCoreApi coreApi, DeathRegister deathRegister, Logger logger) {
+    public DeathListener(HardcoreRevive pluginInstance, DeathRegister deathRegister, Logger logger) {
         this.pluginInstance = pluginInstance;
         this.deathRegister = deathRegister;
         this.logger = logger;
