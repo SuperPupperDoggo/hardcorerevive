@@ -5,7 +5,7 @@ import de.zekro.hcrevive.util.TimeUtil;
 import de.zekro.hcrevive.util.WorldUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
