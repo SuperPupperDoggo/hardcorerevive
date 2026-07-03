@@ -2,6 +2,7 @@ package de.zekro.hcrevive;
 
 import com.superpupperdoggo.hcrevive.generator.PurgatoryGenerator;
 import de.zekro.hcrevive.commands.FlushRegister;
+import de.zekro.hcrevive.commands.PurgatoryTest;
 import de.zekro.hcrevive.deathregister.DeathRegister;
 import de.zekro.hcrevive.listeners.DeathListener;
 import de.zekro.hcrevive.listeners.RespawnListener;
@@ -27,7 +28,7 @@ import java.util.logging.Level;
 public final class HardcoreRevive extends JavaPlugin implements Listener {
 
     private DeathRegister deathRegister;
-    private MultiverseCoreApi multiverse;
+    //private MultiverseCoreApi multiverse;
 
     @Override
     public void onEnable() {
@@ -99,6 +100,8 @@ public final class HardcoreRevive extends JavaPlugin implements Listener {
     private void registerCommands() {
         Objects.requireNonNull(this.getCommand("hcrvFlushRegister"))
                 .setExecutor(new FlushRegister(this.deathRegister));
+        Objects.requireNonNull(this.getCommand("purgatorytest"))
+                .setExecutor(new PurgatoryTest());
     }
 
     @Override
