@@ -1,12 +1,11 @@
 package de.zekro.hcrevive.listeners;
 
 import de.zekro.hcrevive.HardcoreRevive;
-import de.zekro.hcrevive.deathregister.DeathRegister;
 import de.zekro.hcrevive.util.TimeUtil;
 import de.zekro.hcrevive.util.WorldUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PlayerRespawnEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,7 +16,6 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitTask;
 import java.util.logging.Logger;
 import java.util.logging.Level;
