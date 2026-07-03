@@ -79,5 +79,4 @@ public class RespawnListener implements Listener {
         this.logger.log(Level.INFO, String.format(
                 "Player %s respawned in %s", player.getName(), WorldUtil.getName(world)));
         }
-    }
 }
