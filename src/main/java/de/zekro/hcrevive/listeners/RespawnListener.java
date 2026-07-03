@@ -62,13 +62,13 @@ public class RespawnListener implements Listener {
      */
     @EventHandler
     void onRespawn(PlayerRespawnEvent event) {
-        Player player = event.getEntity();
+        Player player = event.getPlayer();
         World world = player.getWorld();
 
         player.setGameMode(GameMode.SURVIVAL);
         World target = player.getServer().getWorld(this.levelName + "_purgatory_purgatory");
         if (target != null) {
-            player.teleport(new Location(target, this.purgatoryX, this.purgatoryY, this.purgatoryZ));
+            event.setRespawnLocation(new Location(target, this.purgatoryX, this.purgatoryY, this.purgatoryZ));
         } else {
             this.logger.log(Level.SEVERE, String.format(
                 "Failed to teleport player %s to purgatory!", player.getName()));
