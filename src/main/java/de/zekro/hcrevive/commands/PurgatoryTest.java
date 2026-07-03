@@ -12,10 +12,7 @@ import org.bukkit.Location;
  * Command executor for /purgatorytest command.
  */
 public class PurgatoryTest implements CommandExecutor {
-    Player player;
-    
-    public PurgatoryTest() {
-    }
+    private Player player;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
