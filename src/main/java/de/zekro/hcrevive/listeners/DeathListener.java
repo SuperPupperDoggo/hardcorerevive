@@ -150,7 +150,7 @@ public class DeathListener implements Listener {
         // Send a message to the death victim.
         player.sendMessage(this.getDeathVictimMessage());
         player.setGameMode(GameMode.SURVIVAL);
-        World target = Server.getWorld(this.levelName + "_purgatory_purgatory");
+        World target = player.getServer().getWorld(this.levelName + "_purgatory_purgatory");
         if (target != null) {
             player.teleport(new Location(target, this.purgatoryX, this.purgatoryY, this.purgatoryZ));
         } else {
